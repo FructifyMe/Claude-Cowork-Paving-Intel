@@ -1,0 +1,904 @@
+<title>Warm Lot Book</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --ground:#EBEEF0; --surface:#FFFFFF; --sunk:#E1E6EA;
+  --ink:#131A20; --ink-2:#4B5862; --ink-3:#77848D;
+  --line:#CBD3D9; --line-soft:#DFE5EA;
+  --stripe:#F0B400;
+  --recon:#B02F24; --repair:#B4660B; --maint:#2F6B4F;
+  --recon-bg:#F7E4E1; --repair-bg:#FAEDDC; --maint-bg:#E2EFE8;
+  --need:#B02F24; --known:#2F6B4F; --partial:#B4660B;
+  --display:"Barlow Condensed",Oswald,"Arial Narrow",sans-serif;
+  --body:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#10151A; --surface:#181F26; --sunk:#131A20;
+    --ink:#E6EBEF; --ink-2:#A3B0BA; --ink-3:#7A8791;
+    --line:#2A333C; --line-soft:#222A32;
+    --stripe:#F0B400;
+    --recon:#E8766A; --repair:#E0A052; --maint:#6FB894;
+    --recon-bg:#2E1C1A; --repair-bg:#2C2318; --maint-bg:#17281F;
+    --need:#E8766A; --known:#6FB894; --partial:#E0A052;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#10151A; --surface:#181F26; --sunk:#131A20;
+  --ink:#E6EBEF; --ink-2:#A3B0BA; --ink-3:#7A8791;
+  --line:#2A333C; --line-soft:#222A32;
+  --stripe:#F0B400;
+  --recon:#E8766A; --repair:#E0A052; --maint:#6FB894;
+  --recon-bg:#2E1C1A; --repair-bg:#2C2318; --maint-bg:#17281F;
+  --need:#E8766A; --known:#6FB894; --partial:#E0A052;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:860px; margin:0 auto; padding:0 16px; padding-block:0 64px; }
+
+/* masthead */
+.mast { padding-block:36px 24px; border-bottom:3px solid var(--ink); }
+.kicker {
+  font-family:var(--display); font-size:13px; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-2); margin:0 0 6px;
+}
+.mast h1 {
+  font-family:var(--display); font-weight:700; font-size:clamp(34px,8vw,54px);
+  line-height:.98; margin:0; letter-spacing:-.01em; text-wrap:balance;
+}
+.mast .sub { margin:14px 0 0; color:var(--ink-2); max-width:62ch; }
+
+.tally { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 0; }
+.tally span {
+  font-family:var(--mono); font-size:12px; padding:5px 9px; border:1px solid var(--line);
+  background:var(--surface); border-radius:2px;
+}
+.tally b { font-weight:600; }
+
+.caveat {
+  margin:22px 0 0; padding:14px 16px; background:var(--sunk);
+  border-left:3px solid var(--need); font-size:13.5px; color:var(--ink-2);
+}
+.caveat strong { color:var(--ink); }
+
+/* filter bar */
+.bar {
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:10;
+  display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+  background:var(--ground); border-bottom:1px solid var(--line);
+  padding-block:10px; margin-bottom:8px;
+}
+.bar .lbl {
+  font-family:var(--display); text-transform:uppercase; letter-spacing:.12em;
+  font-size:12px; color:var(--ink-3); margin-right:2px;
+}
+.bar button {
+  font-family:var(--mono); font-size:12px; padding:6px 11px; cursor:pointer;
+  background:var(--surface); color:var(--ink-2);
+  border:1px solid var(--line); border-radius:2px;
+}
+.bar button[aria-pressed="true"] { background:var(--ink); color:var(--ground); border-color:var(--ink); }
+.bar button:focus-visible { outline:2px solid var(--stripe); outline-offset:2px; }
+
+/* lot record */
+.lot { padding-block:34px; border-bottom:1px solid var(--line); }
+.lot[hidden] { display:none !important; }
+.lot-head { display:flex; gap:14px; align-items:flex-start; }
+.rank {
+  font-family:var(--display); font-weight:700; font-size:40px; line-height:.9;
+  color:var(--ink-3); font-variant-numeric:tabular-nums; flex:0 0 auto;
+  padding-top:2px;
+}
+.lot-id { flex:1 1 220px; min-width:0; }
+.lot-id h2 {
+  font-family:var(--display); font-weight:600; font-size:clamp(23px,5vw,31px);
+  line-height:1.04; margin:0; letter-spacing:-.005em;
+}
+.city { margin:3px 0 0; color:var(--ink-3); font-size:13.5px; }
+.band {
+  font-family:var(--mono); font-size:11px; padding:5px 9px; border-radius:2px;
+  white-space:nowrap; flex:0 0 auto; align-self:center;
+}
+.band-recon { background:var(--recon-bg); color:var(--recon); }
+.band-repair { background:var(--repair-bg); color:var(--repair); }
+.band-maint { background:var(--maint-bg); color:var(--maint); }
+.band-leave { background:var(--sunk); color:var(--ink-3); }
+
+.hero { margin:18px 0 0; }
+.hero img { display:block; width:100%; max-width:100%; background:var(--sunk); }
+.closes { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
+.closes figure { margin:0; }
+.closes img { display:block; width:100%; max-width:100%; background:var(--sunk); }
+
+.facts {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+  gap:1px; margin:18px 0 0; background:var(--line-soft);
+  border:1px solid var(--line-soft);
+}
+.facts > div { background:var(--surface); padding:11px 13px; }
+.facts dt {
+  font-family:var(--display); text-transform:uppercase; letter-spacing:.1em;
+  font-size:11px; color:var(--ink-3);
+}
+.facts dd {
+  margin:3px 0 0; font-family:var(--mono); font-weight:600; font-size:17px;
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em;
+}
+.facts .u { font-size:11px; font-weight:400; color:var(--ink-3); margin-left:3px; }
+.facts .price dd { color:var(--ink); font-size:15px; }
+.facts .mid { display:block; font-size:11px; font-weight:400; color:var(--ink-3); margin-top:2px; }
+
+.detail { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:20px; }
+.block h3 {
+  font-family:var(--display); text-transform:uppercase; letter-spacing:.12em;
+  font-size:12px; color:var(--ink-3); margin:0 0 7px; font-weight:600;
+}
+.ev { margin:0; padding-left:17px; font-size:13.5px; color:var(--ink-2); }
+.ev li { margin-bottom:4px; }
+.owner { margin:0; font-weight:600; font-size:14px; }
+.mail { margin:2px 0 0; font-size:13px; color:var(--ink-2); }
+.contact { margin:9px 0 0; font-size:13px; display:flex; align-items:center; gap:7px; }
+.contact .dot { width:7px; height:7px; border-radius:50%; flex:0 0 auto; }
+.contact-needed { color:var(--need); } .contact-needed .dot { background:var(--need); }
+.contact-known { color:var(--known); } .contact-known .dot { background:var(--known); }
+.contact-partial { color:var(--partial); } .contact-partial .dot { background:var(--partial); }
+.warm { margin:9px 0 0; font-size:12.5px; color:var(--ink-3); font-style:italic; }
+
+.foot { padding-block:30px 0; color:var(--ink-3); font-size:13px; }
+.foot h3 { font-family:var(--display); text-transform:uppercase; letter-spacing:.12em; font-size:12px; color:var(--ink-2); margin:0 0 8px; }
+.foot p { margin:0 0 9px; max-width:66ch; }
+
+@media (max-width:620px) {
+  .detail { grid-template-columns:1fr; gap:18px; }
+  .rank { font-size:30px; }
+  .band { order:3; align-self:flex-start; }
+}
+@media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="mast">
+    <p class="kicker">Warm scan &middot; September 2026</p>
+    <h1>Lots your customers already own</h1>
+    <p class="sub">Every property here is held by an owner you have already worked for in 2026 — a different address, same
+      relationship. Ranked worst pavement first, from spring 2025 aerial imagery at 15 cm. Areas are measured off the
+      photo, not off a plan.</p>
+    <div class="tally">
+      <span><b>20</b> lots</span>
+      <span><b>2</b> reconstruction</span>
+      <span><b>13</b> repair</span>
+      <span><b>5</b> maintenance</span>
+      <span><b>$4,309,600</b> combined mid estimate</span>
+    </div>
+    <p class="caveat"><strong>16 of 20 have no person attached yet.</strong> The owner of record is a holding
+      entity and the mailing address is an asset manager's office. Nothing here is callable until that name exists — treat
+      the list as ranked targets, not a call sheet.</p>
+  </div>
+
+  <div class="bar">
+    <span class="lbl">Show</span>
+    <button type="button" data-f="all" aria-pressed="true" id="f-all">All</button>
+    <button type="button" data-f="recon" aria-pressed="false" id="f-recon">Reconstruction</button>
+    <button type="button" data-f="repair" aria-pressed="false" id="f-repair">Repair</button>
+    <button type="button" data-f="maint" aria-pressed="false" id="f-maint">Maintenance</button>
+    <button type="button" data-f="needed" aria-pressed="false" id="f-needed">Needs a contact</button>
+  </div>
+
+  
+<article class="lot" data-band="recon" data-contact="known" id="w0050">
+  <header class="lot-head">
+    <span class="rank">01</span>
+    <div class="lot-id">
+      <h2>451 Andover Street  335</h2>
+      <p class="city">North Andover &middot; Commercial, Other</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0050-lot.jpg" alt="Aerial view of the lot at 451 ANDOVER STREET  335" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0050-close1.jpg" alt="Close-up of pavement at 451 ANDOVER STREET  335" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>15,780 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>82<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>13,019 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$286,400–$572,800<span class="mid">mid $377,500</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: dense alligator and block cracking over nearly the whole lot</li><li>crop A: large irregular dark patches laid over cracked pavement, with fresh cracks running through the patches</li><li>crop A: bleached and crumbling areas in the western half where striping has disappeared entirely</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">MERRIMACK COLLEGE</p>
+      <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
+      <p class="contact contact-known"><span class="dot"></span>Institution — facilities office, direct</p>
+      <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="recon" data-contact="needed" id="w0025">
+  <header class="lot-head">
+    <span class="rank">02</span>
+    <div class="lot-id">
+      <h2>326 Ballardvale St</h2>
+      <p class="city">Andover &middot; Warehouses for storage of manufactured products</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0025-lot.jpg" alt="Aerial view of the lot at 326 BALLARDVALE ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0025-close1.jpg" alt="Close-up of pavement at 326 BALLARDVALE ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>4,055 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>65<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,636 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$58,000–$116,000<span class="mid">mid $76,400</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: truck yard surface is bleached near-white gray across its whole extent</li><li>panel A: dense interconnected block/alligator crack network covering essentially all visible pavement, polygons shrinking to alligator scale in the lower-right stalls</li><li>panel A: several dark round blowouts/potholes in the eastern half</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">326 BALLARDVALE LLC</p>
+      <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0062">
+  <header class="lot-head">
+    <span class="rank">03</span>
+    <div class="lot-id">
+      <h2>35  Dunham Rd</h2>
+      <p class="city">Billerica &middot; Buildings for manufacturing operations</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0062-lot.jpg" alt="Aerial view of the lot at 35  DUNHAM RD" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0062-close1.jpg" alt="Close-up of pavement at 35  DUNHAM RD" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>11,008 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>75<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>8,256 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$181,600–$363,300<span class="mid">mid $239,400</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: continuous block crack network across essentially the whole front lot</li><li>crop A: bleached, washed-out gray-tan tone typical of a long-unsealed surface</li><li>crop A: yellow hatching and stall lines faded to near-invisible in the open bays</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">ICBP IV HOLDINGS 40 LLC</p>
+      <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0068">
+  <header class="lot-head">
+    <span class="rank">04</span>
+    <div class="lot-id">
+      <h2>51  Alder St</h2>
+      <p class="city">Medway &middot; Buildings for manufacturing operations</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0068-lot.jpg" alt="Aerial view of the lot at 51  ALDER ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0068-close1.jpg" alt="Close-up of pavement at 51  ALDER ST" loading="lazy"></figure><figure class="close"><img src="w0068-close2.jpg" alt="Close-up of pavement at 51  ALDER ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>25,736 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>65<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>16,728 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$368,000–$736,000<span class="mid">mid $485,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop B: dense interconnected block cracking covering the entire south lot and entry drive</li><li>crop B: bleached light-gray surface with badly faded stall lines and hatching</li><li>crop B: several large dark patches laid over already-cracked pavement, with cracking running back through them</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">ICBP IV HOLDINGS 43 LLC</p>
+      <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0072">
+  <header class="lot-head">
+    <span class="rank">05</span>
+    <div class="lot-id">
+      <h2>420 450 Fortune Blvd</h2>
+      <p class="city">Milford &middot; Research and Development facilities</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0072-lot.jpg" alt="Aerial view of the lot at 420 450 FORTUNE BLVD" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0072-close1.jpg" alt="Close-up of pavement at 420 450 FORTUNE BLVD" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>17,568 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>62<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>10,980 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$241,600–$483,100<span class="mid">mid $318,400</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: block crack network with clearly interconnected polygons across the large main field, strongest in the upper-right and centre</li><li>crop A: cracking continues through the drive aisles and into the lower stall rows</li><li>crop A: weathered light-gray tone, striping faded to thin gray lines</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">BPVIF V HOLDINGS 18 LLC</p>
+      <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0026">
+  <header class="lot-head">
+    <span class="rank">06</span>
+    <div class="lot-id">
+      <h2>326 Ballardvale St</h2>
+      <p class="city">Wilmington &middot; Warehouses for storage of manufactured products</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0026-lot.jpg" alt="Aerial view of the lot at 326 BALLARDVALE ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0026-close1.jpg" alt="Close-up of pavement at 326 BALLARDVALE ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>4,430 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>58<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,547 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$56,000–$112,100<span class="mid">mid $73,900</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: interconnected crack network over the yard and stall rows on the undimmed east side</li><li>crop A: several darker rectangular patches of different tone set into the cracked surface</li><li>crop A: bleached light patch beside the north stall row where the surface has weathered out</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">326 BALLARDVALE LLC</p>
+      <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="known" id="w0051">
+  <header class="lot-head">
+    <span class="rank">07</span>
+    <div class="lot-id">
+      <h2>510 530 Turnpike Street</h2>
+      <p class="city">North Andover &middot; (formerly Colleges, Schools(private).  Removed June 2009. )</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0051-lot.jpg" alt="Aerial view of the lot at 510 530 TURNPIKE STREET" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0051-close1.jpg" alt="Close-up of pavement at 510 530 TURNPIKE STREET" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>5,603 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>62<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>3,502 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$77,000–$154,100<span class="mid">mid $101,600</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: interconnected crack network across the north drive aisle and the stall bays behind it</li><li>crop A: dark sealed crack lines running diagonally through the eastern parking field</li><li>crop A: weathered gray tone with tonal patching near the northeast corner</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">MERRIMACK COLLEGE</p>
+      <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
+      <p class="contact contact-known"><span class="dot"></span>Institution — facilities office, direct</p>
+      <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0032">
+  <header class="lot-head">
+    <span class="rank">08</span>
+    <div class="lot-id">
+      <h2>167 Elm St L46</h2>
+      <p class="city">Salisbury &middot; Other Storage, Warehouse, and Distribution facilities (see also usecode 401)</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0032-lot.jpg" alt="Aerial view of the lot at 167 ELM ST L46" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0032-close1.jpg" alt="Close-up of pavement at 167 ELM ST L46" loading="lazy"></figure><figure class="close"><img src="w0032-close2.jpg" alt="Close-up of pavement at 167 ELM ST L46" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>19,899 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>68<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>13,432 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$295,500–$591,000<span class="mid">mid $389,500</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: block crack network runs across the entire main lot, long interconnected dark lines forming large polygons through the aisles and stalls</li><li>panel A: weathered gray tone throughout, though white striping is still fairly crisp</li><li>panel B: same block network continues across the storage drive aisles, with several tone-mismatched patches near the bottom</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">TR KELLY BRANDON D KELLY REBECCA CHU</p>
+      <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0017">
+  <header class="lot-head">
+    <span class="rank">09</span>
+    <div class="lot-id">
+      <h2>175 Kenneth W Welch Dr</h2>
+      <p class="city">Lakeville &middot; Warehouses for storage of manufactured products</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0017-lot.jpg" alt="Aerial view of the lot at 175 KENNETH W WELCH DR" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0017-close1.jpg" alt="Close-up of pavement at 175 KENNETH W WELCH DR" loading="lazy"></figure><figure class="close"><img src="w0017-close2.jpg" alt="Close-up of pavement at 175 KENNETH W WELCH DR" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>41,828 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>25<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>10,457 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$230,100–$460,100<span class="mid">mid $303,300</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: lower-left half of the main lot carries a plainly interconnected block crack network over a large contiguous section</li><li>crop A: striping in that section is faded to faint gray while the upper-right rows are still crisp</li><li>crop A: weathered blotchy gray tone through the cracked section</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">ARC TBLVLMA001 LLC</p>
+      <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0010">
+  <header class="lot-head">
+    <span class="rank">10</span>
+    <div class="lot-id">
+      <h2>8001 8028 Ambassador Dr</h2>
+      <p class="city">Westborough &middot; Apartments with More than Eight Units</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0010-lot.jpg" alt="Aerial view of the lot at 8001 8028 AMBASSADOR DR" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0010-close1.jpg" alt="Close-up of pavement at 8001 8028 AMBASSADOR DR" loading="lazy"></figure><figure class="close"><img src="w0010-close2.jpg" alt="Close-up of pavement at 8001 8028 AMBASSADOR DR" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>34,613 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>35<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>12,115 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$266,500–$533,000<span class="mid">mid $351,300</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel C: upper-left section of the lot shows a plainly interconnected block crack network over a large continuous area, tone bleached light gray there</li><li>panel C: striping worn away in that same section</li><li>panel A: drives and bays weathered gray with faded striping but no network</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">BVF-V WESTBOROUGH LLC</p>
+      <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0019">
+  <header class="lot-head">
+    <span class="rank">11</span>
+    <div class="lot-id">
+      <h2>8 Technology Dr</h2>
+      <p class="city">Chelmsford &middot; Office Building - part of manufacturing operation</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0019-lot.jpg" alt="Aerial view of the lot at 8 TECHNOLOGY DR" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0019-close1.jpg" alt="Close-up of pavement at 8 TECHNOLOGY DR" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>6,779 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>32<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,203 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$48,500–$96,900<span class="mid">mid $63,900</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: interconnected crack network through the centre and right-hand drive aisle, branching across a substantial contiguous section</li><li>crop A: cracking runs along and between the stall rows east of the crosswalk</li><li>crop A: weathered blotchy gray tone with striping faded to thin gray in the upper rows</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">8 TECH LLC</p>
+      <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0078">
+  <header class="lot-head">
+    <span class="rank">12</span>
+    <div class="lot-id">
+      <h2>250 280 Tosca Dr</h2>
+      <p class="city">Stoughton &middot; Mixed Use (Primarily Commercial, some Industrial)</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0078-lot.jpg" alt="Aerial view of the lot at 250 280 TOSCA DR" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0078-close1.jpg" alt="Close-up of pavement at 250 280 TOSCA DR" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>7,821 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>22<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>1,760 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$38,700–$77,400<span class="mid">mid $51,000</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: bleached pale tan-gray surface across the whole yard with no striping left anywhere</li><li>panel A: south-central section shows irregular dark broken-up/patched areas and rutting</li><li>panel A: rough gravelly, crumbling edge along the south boundary of the yard</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">BPAZ HOLDINGS 40</p>
+      <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0002">
+  <header class="lot-head">
+    <span class="rank">13</span>
+    <div class="lot-id">
+      <h2>2 Hampshire Street</h2>
+      <p class="city">Foxborough &middot; General Office Buildings</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0002-lot.jpg" alt="Aerial view of the lot at 2 HAMPSHIRE STREET" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0002-close1.jpg" alt="Close-up of pavement at 2 HAMPSHIRE STREET" loading="lazy"></figure><figure class="close"><img src="w0002-close2.jpg" alt="Close-up of pavement at 2 HAMPSHIRE STREET" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>16,324 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>38<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>6,122 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$134,700–$269,300<span class="mid">mid $177,500</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel B: interconnected crack network visible through the aisles and between stall rows over a substantial part of the lot</li><li>panel A: fainter but still networked block cracking across the upper lot, lines irregular rather than straight paving seams</li><li>both panels: striping recently repainted and crisp, tone medium gray with no patching or breakup</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">QUINCY FOXBORO LLC</p>
+      <p class="mail">2310 WASHINGTON STREET, NEWTON LOWER FALLS, MA 02462</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 93 WORCESTER STREET, WELLESLEY (G and M New England)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" id="w0073">
+  <header class="lot-head">
+    <span class="rank">14</span>
+    <div class="lot-id">
+      <h2>550 Forbes Blvd</h2>
+      <p class="city">Mansfield &middot; Warehouses for storage of manufactured products</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0073-lot.jpg" alt="Aerial view of the lot at 550 FORBES BLVD" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0073-close1.jpg" alt="Close-up of pavement at 550 FORBES BLVD" loading="lazy"></figure><figure class="close"><img src="w0073-close2.jpg" alt="Close-up of pavement at 550 FORBES BLVD" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>23,339 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>28<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>6,418 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$141,200–$282,400<span class="mid">mid $186,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: large empty yard is bleached near-white gray with a regular grid of straight seams (reads as jointed slab, not cracking)</li><li>panel A: a few isolated irregular cracks plus one small dark patch/repair near the center, no interconnected network</li><li>panel B: truck court is dark, evenly toned and clearly newer, striping crisp</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">BPVIF V HOLDINGS 43 LLC</p>
+      <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="known" id="w0048">
+  <header class="lot-head">
+    <span class="rank">15</span>
+    <div class="lot-id">
+      <h2>Andover By Pass</h2>
+      <p class="city">North Andover &middot; (formerly Colleges, Schools(private).  Removed June 2009. )</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="w0048-lot.jpg" alt="Aerial view of the lot at ANDOVER BY PASS" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0048-close1.jpg" alt="Close-up of pavement at ANDOVER BY PASS" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>4,300 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>25<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>1,075 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$23,600–$47,300<span class="mid">mid $31,200</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: small contractor-style yard at the south end, light gray-tan, unstriped and blotchy</li><li>crop A: narrow access drive to the north is even-toned with no visible cracking</li><li>crop A: no interconnected crack network resolvable anywhere on the parcel</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">MERRIMACK COLLEGE</p>
+      <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
+      <p class="contact contact-known"><span class="dot"></span>Institution — facilities office, direct</p>
+      <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="maint" data-contact="needed" id="w0059">
+  <header class="lot-head">
+    <span class="rank">16</span>
+    <div class="lot-id">
+      <h2>0  Middlesex Tpk Ext</h2>
+      <p class="city">Burlington &middot; Apartments with More than Eight Units</p>
+    </div>
+    <span class="band band-maint">Maintenance only</span>
+  </header>
+
+  <figure class="hero"><img src="w0059-lot.jpg" alt="Aerial view of the lot at 0  MIDDLESEX TPK EXT" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0059-close1.jpg" alt="Close-up of pavement at 0  MIDDLESEX TPK EXT" loading="lazy"></figure><figure class="close"><img src="w0059-close2.jpg" alt="Close-up of pavement at 0  MIDDLESEX TPK EXT" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>28,469 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>20<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>5,694 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$125,300–$250,500<span class="mid">mid $165,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop C: branching crack fan in the drive left of centre, plus scattered linear cracks along the through-drive</li><li>crop A: several curving cracks in the aisle between buildings and at the bottom stall row</li><li>crop B: isolated cracks near the upper-left lot edge; the rest of the lot is intact</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">KOSOW MARVIN P TR</p>
+      <p class="mail">181 WELLS AVE #303, NEWTON, MA 02459</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 215 SALEM ST, WOBURN (Kadima)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="maint" data-contact="partial" id="w0057">
+  <header class="lot-head">
+    <span class="rank">17</span>
+    <div class="lot-id">
+      <h2>2000 Bay St</h2>
+      <p class="city">Fall River &middot; Apartments with More than Eight Units</p>
+    </div>
+    <span class="band band-maint">Maintenance only</span>
+  </header>
+
+  <figure class="hero"><img src="w0057-lot.jpg" alt="Aerial view of the lot at 2000 BAY ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0057-close1.jpg" alt="Close-up of pavement at 2000 BAY ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>11,813 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>30<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>3,544 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$78,000–$155,900<span class="mid">mid $102,800</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: block crack network spanning the main drive aisle and adjoining stall bays north of the buildings</li><li>crop A: interconnected cracks also run the full width of the curved loop drive on the east side</li><li>crop A: weathered light-gray tone with cracks branching between stalls; striping still legible</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">FALL RIVER BAY VILLAGE LTD PRT</p>
+      <p class="mail">151 TREMONT ST, BOSTON, MA 02111</p>
+      <p class="contact contact-partial"><span class="dot"></span>Named owner — verify before calling</p>
+      <p class="warm">warm: same owner address as 165 CARL AV, BROCKTON (Davis commons)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="maint" data-contact="needed" id="w0043">
+  <header class="lot-head">
+    <span class="rank">18</span>
+    <div class="lot-id">
+      <h2>210 Andover St Main Parce</h2>
+      <p class="city">Peabody &middot; Shopping Centers/Malls</p>
+    </div>
+    <span class="band band-maint">Maintenance only</span>
+  </header>
+
+  <figure class="hero"><img src="w0043-lot.jpg" alt="Aerial view of the lot at 210 ANDOVER ST MAIN PARCE" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0043-close1.jpg" alt="Close-up of pavement at 210 ANDOVER ST MAIN PARCE" loading="lazy"></figure><figure class="close"><img src="w0043-close2.jpg" alt="Close-up of pavement at 210 ANDOVER ST MAIN PARCE" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>189,698 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>14<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>25,609 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$563,400–$1,126,800<span class="mid">mid $742,700</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop E: scattered long linear and lightly branching cracks along the drive aisles, plus a small darker patch near the island</li><li>crop G: two long isolated meandering cracks crossing otherwise clean pavement</li><li>crops A, B, C, D, F: uniform light-gray surface with very crisp white striping and no crack network</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">MALL AT NORTHSHORE LLC</p>
+      <p class="mail">PO BOX 6120, INDIANAPOLIS, IN 46206</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 100  INDEPENDENCE WAY, DANVERS (Simon Malls ( Liberty Tree Mall))</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="maint" data-contact="needed" id="w0037">
+  <header class="lot-head">
+    <span class="rank">19</span>
+    <div class="lot-id">
+      <h2>72 Cherry Hill Dr</h2>
+      <p class="city">Beverly &middot; Office Building - part of manufacturing operation</p>
+    </div>
+    <span class="band band-maint">Maintenance only</span>
+  </header>
+
+  <figure class="hero"><img src="w0037-lot.jpg" alt="Aerial view of the lot at 72 CHERRY HILL DR" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0037-close1.jpg" alt="Close-up of pavement at 72 CHERRY HILL DR" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>10,652 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>18<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>1,971 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$43,400–$86,700<span class="mid">mid $57,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: long continuous linear cracks running the length of each drive aisle, several in parallel</li><li>panel A: branching side cracks connecting adjacent aisle cracks in the east half, forming an incipient network</li><li>panel A: light gray weathered tone, striping still fairly crisp, no potholes or patch-on-patch</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">1010 CHERRY HILL LLC</p>
+      <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="maint" data-contact="needed" id="w0015">
+  <header class="lot-head">
+    <span class="rank">20</span>
+    <div class="lot-id">
+      <h2>367  Maple St</h2>
+      <p class="city">Danvers &middot; Private Hospitals</p>
+    </div>
+    <span class="band band-maint">Maintenance only</span>
+  </header>
+
+  <figure class="hero"><img src="w0015-lot.jpg" alt="Aerial view of the lot at 367  MAPLE ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="w0015-close1.jpg" alt="Close-up of pavement at 367  MAPLE ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>4,362 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>12<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>545 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$12,000–$24,000<span class="mid">mid $15,800</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: paved stall rows and the east drive are pale gray with thin faded striping, intact, no crack network</li><li>panel A: one dark irregular crack line crossing the north apron</li><li>panel A: large pale tan areas west and south of the building read as gravel/dirt, not asphalt</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">CVVF DANVERS MA, LLC</p>
+      <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
+      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
+    </div>
+  </div>
+</article>
+
+  <div class="foot">
+    <h3>How to read this</h3>
+    <p><strong>Pavement on site</strong> is every paved square yard inside the parcel line, buildings removed. On lots
+      where a whole-lot job was done in 2026, this measure came within about 10% of the invoiced square yards.</p>
+    <p><strong>Section to price</strong> is the share of the lot showing distress, because owners buy one section at a
+      time. <strong>Likely ticket</strong> applies your own 2026 unit pricing to that section: $22 and $44 per square
+      yard are the middle half of your jobs, $29 the median. It is a range to open a conversation, not a quote.</p>
+    <p><strong>Condition</strong> is judged twice from the photo by independent reviewers working from a written rubric
+      and a reference sheet of real examples. Reviewers agreed on the exact band 61% of the time and were never more
+      than one band apart. The ordering is more reliable than the label.</p>
+    <p>Photography is spring 2025, leaves off. Anything repaved since will look worse here than it is on the ground.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.bar button'));
+  var lots = Array.prototype.slice.call(document.querySelectorAll('.lot'));
+  function apply(f) {
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.f === f)); });
+    lots.forEach(function (l) {
+      l.hidden = !(f === 'all' || l.dataset.band === f || l.dataset.contact === f);
+    });
+    try { localStorage.setItem('lotbook-filter', f); } catch (e) {}
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.f); }); });
+  var saved = null;
+  try { saved = localStorage.getItem('lotbook-filter'); } catch (e) {}
+  if (saved && btns.some(function (b) { return b.dataset.f === saved; })) apply(saved);
+})();
+</script>
