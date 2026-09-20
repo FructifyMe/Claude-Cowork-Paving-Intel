@@ -148,6 +148,15 @@ body {
 .contact-known { color:var(--known); } .contact-known .dot { background:var(--known); }
 .contact-partial { color:var(--partial); } .contact-partial .dot { background:var(--partial); }
 .warm { margin:9px 0 0; font-size:12.5px; color:var(--ink-3); font-style:italic; }
+.contacts { margin:10px 0 0; padding:11px 13px; background:var(--sunk); border-left:3px solid var(--maint); }
+.contacts .org { margin:0 0 7px; font-weight:600; font-size:13px; }
+.people { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+.people li { display:flex; flex-direction:column; font-size:13px; line-height:1.35; }
+.people b { font-weight:600; }
+.people .ct { color:var(--ink-2); font-size:12.5px; }
+.people a { color:var(--maint); font-family:var(--mono); font-size:12px; word-break:break-all; }
+.people .src { color:var(--ink-3); font-size:11px; }
+.cnote { margin:9px 0 0; font-size:12px; color:var(--ink-2); }
 
 .foot { padding-block:30px 0; color:var(--ink-3); font-size:13px; }
 .foot h3 { font-family:var(--display); text-transform:uppercase; letter-spacing:.12em; font-size:12px; color:var(--ink-2); margin:0 0 8px; }
@@ -175,9 +184,10 @@ body {
       <span><b>5</b> maintenance</span>
       <span><b>$4,309,600</b> combined mid estimate</span>
     </div>
-    <p class="caveat"><strong>16 of 20 have no person attached yet.</strong> The owner of record is a holding
-      entity and the mailing address is an asset manager's office. Nothing here is callable until that name exists — treat
-      the list as ranked targets, not a call sheet.</p>
+    <p class="caveat"><strong>14 of 20 lots now have a named person to call.</strong> The top 16 lots are held by
+      only six owners, so this is six conversations, not twenty. Contacts came from company directories, the
+      Massachusetts Secretary of State and ZoomInfo; each one is labelled with where it came from and how sure we are.
+      6 still need a name.</p>
   </div>
 
   <div class="bar">
@@ -219,12 +229,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">MERRIMACK COLLEGE</p>
       <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
-      <p class="contact contact-known"><span class="dot"></span>Institution — facilities office, direct</p>
+      <div class='contacts'><p class='org'>Merrimack College &middot; Facilities 978-837-5144 · main 978-837-5000</p><ul class='people'><li><b>Alexander True</b><span class='ct'>Grounds Manager</span><a href='mailto:trueal@merrimack.edu'>trueal@merrimack.edu</a><span class='src'>college directory</span></li><li><b>Lisa Garcia</b><span class='ct'>Manager, Facilities Services</span><a href='mailto:garcial@merrimack.edu'>garcial@merrimack.edu</a><span class='src'>college directory · 978-837-5144</span></li><li><b>Timothy O&#x27;Leary</b><span class='ct'>Deputy COO &amp; Sr AVP, Strategic Operations</span><a href='mailto:olearytr@merrimack.edu'>olearytr@merrimack.edu</a><span class='src'>college directory — budget authority</span></li><li><b>Allison Gill</b><span class='ct'>SVP Student Affairs &amp; Success, COO</span><a href='mailto:gilla@merrimack.edu'>gilla@merrimack.edu</a><span class='src'>college directory</span></li></ul><p class='cnote'>Easiest conversation on the list: in-house facilities department, three adjacent properties, one lot visibly coming apart.</p></div>
       <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="recon" data-contact="needed" id="w0025">
+<article class="lot" data-band="recon" data-contact="known" id="w0025">
   <header class="lot-head">
     <span class="rank">02</span>
     <div class="lot-id">
@@ -253,12 +263,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">326 BALLARDVALE LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
       <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0062">
+<article class="lot" data-band="repair" data-contact="known" id="w0062">
   <header class="lot-head">
     <span class="rank">03</span>
     <div class="lot-id">
@@ -287,12 +297,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">ICBP IV HOLDINGS 40 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
       <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0068">
+<article class="lot" data-band="repair" data-contact="known" id="w0068">
   <header class="lot-head">
     <span class="rank">04</span>
     <div class="lot-id">
@@ -321,12 +331,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">ICBP IV HOLDINGS 43 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
       <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0072">
+<article class="lot" data-band="repair" data-contact="known" id="w0072">
   <header class="lot-head">
     <span class="rank">05</span>
     <div class="lot-id">
@@ -355,12 +365,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">BPVIF V HOLDINGS 18 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
       <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0026">
+<article class="lot" data-band="repair" data-contact="known" id="w0026">
   <header class="lot-head">
     <span class="rank">06</span>
     <div class="lot-id">
@@ -389,7 +399,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">326 BALLARDVALE LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
       <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
@@ -423,12 +433,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">MERRIMACK COLLEGE</p>
       <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
-      <p class="contact contact-known"><span class="dot"></span>Institution — facilities office, direct</p>
+      <div class='contacts'><p class='org'>Merrimack College &middot; Facilities 978-837-5144 · main 978-837-5000</p><ul class='people'><li><b>Alexander True</b><span class='ct'>Grounds Manager</span><a href='mailto:trueal@merrimack.edu'>trueal@merrimack.edu</a><span class='src'>college directory</span></li><li><b>Lisa Garcia</b><span class='ct'>Manager, Facilities Services</span><a href='mailto:garcial@merrimack.edu'>garcial@merrimack.edu</a><span class='src'>college directory · 978-837-5144</span></li><li><b>Timothy O&#x27;Leary</b><span class='ct'>Deputy COO &amp; Sr AVP, Strategic Operations</span><a href='mailto:olearytr@merrimack.edu'>olearytr@merrimack.edu</a><span class='src'>college directory — budget authority</span></li><li><b>Allison Gill</b><span class='ct'>SVP Student Affairs &amp; Success, COO</span><a href='mailto:gilla@merrimack.edu'>gilla@merrimack.edu</a><span class='src'>college directory</span></li></ul><p class='cnote'>Easiest conversation on the list: in-house facilities department, three adjacent properties, one lot visibly coming apart.</p></div>
       <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0032">
+<article class="lot" data-band="repair" data-contact="known" id="w0032">
   <header class="lot-head">
     <span class="rank">08</span>
     <div class="lot-id">
@@ -457,12 +467,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">TR KELLY BRANDON D KELLY REBECCA CHU</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
       <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0017">
+<article class="lot" data-band="repair" data-contact="known" id="w0017">
   <header class="lot-head">
     <span class="rank">09</span>
     <div class="lot-id">
@@ -491,12 +501,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">ARC TBLVLMA001 LLC</p>
       <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Realty Income (via VEREIT Operating Partnership LP)</p><ul class='people'><li><b>Daniel Haug, Bianca Martinez, Karolina Ericsson</b><span class='ct'>authorised on real property (plus VEREIT Operating Partnership LP as Manager)</span><span class='src'>MA Secretary of State filing</span></li></ul><p class='cnote'>IMPORTANT: Realty Income is a net-lease REIT. Under a triple-net lease the TENANT pays for parking lot maintenance, not the landlord. For this lot the buyer is probably the occupier at 175 Kenneth W Welch Dr, not San Diego. Check the tenant before spending a call.</p></div>
       <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0010">
+<article class="lot" data-band="repair" data-contact="known" id="w0010">
   <header class="lot-head">
     <span class="rank">10</span>
     <div class="lot-id">
@@ -525,12 +535,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">BVF-V WESTBOROUGH LLC</p>
       <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>One Beacon St, 24th Floor, Boston — owner of BVF-V Westborough LLC</p><ul class='people'><li><b>Stephen Gullo, Mary Beth Bloom, David Doherty, Ravi Ragnauth, John Lamb, Jason Polcaro, Melinda Brothers, Eric Schrumpf, Brittany Colgan, Joseph Orlandello, Eric Draeger, Jon Frey, Phil Derboghosian</b><span class='ct'>authorised to execute instruments affecting real property</span><span class='src'>MA Secretary of State filing</span></li></ul><p class='cnote'>Thirteen real names at a real Boston address. Signatories, not necessarily the asset manager — but enough to find the right one.</p></div>
       <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0019">
+<article class="lot" data-band="repair" data-contact="known" id="w0019">
   <header class="lot-head">
     <span class="rank">11</span>
     <div class="lot-id">
@@ -559,12 +569,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">8 TECH LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
       <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0078">
+<article class="lot" data-band="repair" data-contact="known" id="w0078">
   <header class="lot-head">
     <span class="rank">12</span>
     <div class="lot-id">
@@ -593,7 +603,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">BPAZ HOLDINGS 40</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
       <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
@@ -627,12 +637,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">QUINCY FOXBORO LLC</p>
       <p class="mail">2310 WASHINGTON STREET, NEWTON LOWER FALLS, MA 02462</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Quincy Foxboro LLC</p><p class='contact contact-needed'><span class='dot'></span>No person yet</p><p class='cnote'>Not yet looked up. Needs a Massachusetts filing pull, about five minutes in the browser.</p></div>
       <p class="warm">warm: same owner address as 93 WORCESTER STREET, WELLESLEY (G and M New England)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0073">
+<article class="lot" data-band="repair" data-contact="known" id="w0073">
   <header class="lot-head">
     <span class="rank">14</span>
     <div class="lot-id">
@@ -661,7 +671,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">BPVIF V HOLDINGS 43 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
       <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
@@ -695,7 +705,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">MERRIMACK COLLEGE</p>
       <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
-      <p class="contact contact-known"><span class="dot"></span>Institution — facilities office, direct</p>
+      <div class='contacts'><p class='org'>Merrimack College &middot; Facilities 978-837-5144 · main 978-837-5000</p><ul class='people'><li><b>Alexander True</b><span class='ct'>Grounds Manager</span><a href='mailto:trueal@merrimack.edu'>trueal@merrimack.edu</a><span class='src'>college directory</span></li><li><b>Lisa Garcia</b><span class='ct'>Manager, Facilities Services</span><a href='mailto:garcial@merrimack.edu'>garcial@merrimack.edu</a><span class='src'>college directory · 978-837-5144</span></li><li><b>Timothy O&#x27;Leary</b><span class='ct'>Deputy COO &amp; Sr AVP, Strategic Operations</span><a href='mailto:olearytr@merrimack.edu'>olearytr@merrimack.edu</a><span class='src'>college directory — budget authority</span></li><li><b>Allison Gill</b><span class='ct'>SVP Student Affairs &amp; Success, COO</span><a href='mailto:gilla@merrimack.edu'>gilla@merrimack.edu</a><span class='src'>college directory</span></li></ul><p class='cnote'>Easiest conversation on the list: in-house facilities department, three adjacent properties, one lot visibly coming apart.</p></div>
       <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
     </div>
   </div>
@@ -729,12 +739,12 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">KOSOW MARVIN P TR</p>
       <p class="mail">181 WELLS AVE #303, NEWTON, MA 02459</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <div class='contacts'><p class='org'>Kosow Marvin P TR</p><p class='contact contact-needed'><span class='dot'></span>No person yet</p><p class='cnote'>Not yet looked up. A trust, so it will not be in the corporate database — try the Registry of Deeds or the Newton assessor.</p></div>
       <p class="warm">warm: same owner address as 215 SALEM ST, WOBURN (Kadima)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="maint" data-contact="partial" id="w0057">
+<article class="lot" data-band="maint" data-contact="needed" id="w0057">
   <header class="lot-head">
     <span class="rank">17</span>
     <div class="lot-id">
@@ -763,7 +773,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">FALL RIVER BAY VILLAGE LTD PRT</p>
       <p class="mail">151 TREMONT ST, BOSTON, MA 02111</p>
-      <p class="contact contact-partial"><span class="dot"></span>Named owner — verify before calling</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
       <p class="warm">warm: same owner address as 165 CARL AV, BROCKTON (Davis commons)</p>
     </div>
   </div>
@@ -797,7 +807,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">MALL AT NORTHSHORE LLC</p>
       <p class="mail">PO BOX 6120, INDIANAPOLIS, IN 46206</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
       <p class="warm">warm: same owner address as 100  INDEPENDENCE WAY, DANVERS (Simon Malls ( Liberty Tree Mall))</p>
     </div>
   </div>
@@ -831,7 +841,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">1010 CHERRY HILL LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
       <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
@@ -865,7 +875,7 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">CVVF DANVERS MA, LLC</p>
       <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
-      <p class="contact contact-needed"><span class="dot"></span>Holding entity — no person yet</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
       <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
     </div>
   </div>
