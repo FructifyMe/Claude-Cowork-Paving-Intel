@@ -1,4 +1,4 @@
-<title>Warm Lot Book</title>
+<title>Paving Intel Lot Book</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
 :root {
@@ -18,7 +18,6 @@
     --ground:#10151A; --surface:#181F26; --sunk:#131A20;
     --ink:#E6EBEF; --ink-2:#A3B0BA; --ink-3:#7A8791;
     --line:#2A333C; --line-soft:#222A32;
-    --stripe:#F0B400;
     --recon:#E8766A; --repair:#E0A052; --maint:#6FB894;
     --recon-bg:#2E1C1A; --repair-bg:#2C2318; --maint-bg:#17281F;
     --need:#E8766A; --known:#6FB894; --partial:#E0A052;
@@ -28,7 +27,6 @@
   --ground:#10151A; --surface:#181F26; --sunk:#131A20;
   --ink:#E6EBEF; --ink-2:#A3B0BA; --ink-3:#7A8791;
   --line:#2A333C; --line-soft:#222A32;
-  --stripe:#F0B400;
   --recon:#E8766A; --repair:#E0A052; --maint:#6FB894;
   --recon-bg:#2E1C1A; --repair-bg:#2C2318; --maint-bg:#17281F;
   --need:#E8766A; --known:#6FB894; --partial:#E0A052;
@@ -41,7 +39,6 @@ body {
 }
 .wrap { max-width:860px; margin:0 auto; padding:0 16px; padding-block:0 64px; }
 
-/* masthead */
 .mast { padding-block:36px 24px; border-bottom:3px solid var(--ink); }
 .kicker {
   font-family:var(--display); font-size:13px; font-weight:600; letter-spacing:.16em;
@@ -62,11 +59,10 @@ body {
 
 .caveat {
   margin:22px 0 0; padding:14px 16px; background:var(--sunk);
-  border-left:3px solid var(--need); font-size:13.5px; color:var(--ink-2);
+  border-left:3px solid var(--maint); font-size:13.5px; color:var(--ink-2);
 }
 .caveat strong { color:var(--ink); }
 
-/* filter bar */
 .bar {
   position:sticky; top:env(safe-area-inset-top, 0px); z-index:10;
   display:flex; gap:6px; flex-wrap:wrap; align-items:center;
@@ -85,14 +81,20 @@ body {
 .bar button[aria-pressed="true"] { background:var(--ink); color:var(--ground); border-color:var(--ink); }
 .bar button:focus-visible { outline:2px solid var(--stripe); outline-offset:2px; }
 
-/* lot record */
+.secthead { padding-block:30px 0; }
+.secthead[hidden] { display:none !important; }
+.secthead h2 {
+  font-family:var(--display); font-weight:700; font-size:clamp(24px,5vw,34px);
+  margin:0; line-height:1.02;
+}
+.secthead p { margin:7px 0 0; color:var(--ink-2); font-size:13.5px; max-width:62ch; }
+
 .lot { padding-block:34px; border-bottom:1px solid var(--line); }
 .lot[hidden] { display:none !important; }
 .lot-head { display:flex; gap:14px; align-items:flex-start; }
 .rank {
   font-family:var(--display); font-weight:700; font-size:40px; line-height:.9;
-  color:var(--ink-3); font-variant-numeric:tabular-nums; flex:0 0 auto;
-  padding-top:2px;
+  color:var(--ink-3); font-variant-numeric:tabular-nums; flex:0 0 auto; padding-top:2px;
 }
 .lot-id { flex:1 1 220px; min-width:0; }
 .lot-id h2 {
@@ -117,8 +119,7 @@ body {
 
 .facts {
   display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
-  gap:1px; margin:18px 0 0; background:var(--line-soft);
-  border:1px solid var(--line-soft);
+  gap:1px; margin:18px 0 0; background:var(--line-soft); border:1px solid var(--line-soft);
 }
 .facts > div { background:var(--surface); padding:11px 13px; }
 .facts dt {
@@ -145,10 +146,11 @@ body {
 .contact { margin:9px 0 0; font-size:13px; display:flex; align-items:center; gap:7px; }
 .contact .dot { width:7px; height:7px; border-radius:50%; flex:0 0 auto; }
 .contact-needed { color:var(--need); } .contact-needed .dot { background:var(--need); }
-.contact-known { color:var(--known); } .contact-known .dot { background:var(--known); }
-.contact-partial { color:var(--partial); } .contact-partial .dot { background:var(--partial); }
-.warm { margin:9px 0 0; font-size:12.5px; color:var(--ink-3); font-style:italic; }
+.contact-occupier { color:var(--partial); } .contact-occupier .dot { background:var(--partial); }
+
 .contacts { margin:10px 0 0; padding:11px 13px; background:var(--sunk); border-left:3px solid var(--maint); }
+.contacts.needs { border-left-color:var(--need); }
+.contacts.occ { border-left-color:var(--partial); }
 .contacts .org { margin:0 0 7px; font-weight:600; font-size:13px; }
 .people { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
 .people li { display:flex; flex-direction:column; font-size:13px; line-height:1.35; }
@@ -172,35 +174,42 @@ body {
 
 <div class="wrap">
   <div class="mast">
-    <p class="kicker">Warm scan &middot; September 2026</p>
-    <h1>Lots your customers already own</h1>
-    <p class="sub">Every property here is held by an owner you have already worked for in 2026 — a different address, same
-      relationship. Ranked worst pavement first, from spring 2025 aerial imagery at 15 cm. Areas are measured off the
-      photo, not off a plan.</p>
+    <p class="kicker">Warm owners and Methuen &middot; September 2026</p>
+    <h1>Forty lots worth a look</h1>
+    <p class="sub">Ranked worst pavement first, from spring 2025 aerial imagery at 15 cm. Areas are measured off the
+      photo, not off a plan. Two lists: properties held by owners you already work for, and every commercial lot in
+      Methuen that cleared the size floor.</p>
     <div class="tally">
-      <span><b>20</b> lots</span>
-      <span><b>2</b> reconstruction</span>
-      <span><b>13</b> repair</span>
-      <span><b>5</b> maintenance</span>
-      <span><b>$4,309,600</b> combined mid estimate</span>
+      <span><b>20</b> warm</span>
+      <span><b>20</b> Methuen</span>
+      <span><b>7</b> reconstruction</span>
+      <span><b>28</b> repair</span>
+      <span><b>14</b> with a named contact</span>
+      <span><b>6</b> owner-occupier</span>
+      <span><b>$8,866,600</b> combined mid estimate</span>
     </div>
-    <p class="caveat"><strong>14 of 20 lots now have a named person to call.</strong> The top 16 lots are held by
-      only six owners, so this is six conversations, not twenty. Contacts came from company directories, the
-      Massachusetts Secretary of State and ZoomInfo; each one is labelled with where it came from and how sure we are.
-      6 still need a name.</p>
+    <p class="caveat"><strong>The warm list is six conversations; the Methuen list is thirty-five.</strong> The top 16 warm
+      lots belong to just six owners, so one call covers several properties. Methuen's top lots have almost one owner
+      each — but many are local businesses you can walk into. Contacts are labelled with where they came from.</p>
   </div>
 
   <div class="bar">
     <span class="lbl">Show</span>
     <button type="button" data-f="all" aria-pressed="true" id="f-all">All</button>
+    <button type="button" data-f="warm" aria-pressed="false" id="f-warm">Warm</button>
+    <button type="button" data-f="methuen" aria-pressed="false" id="f-methuen">Methuen</button>
     <button type="button" data-f="recon" aria-pressed="false" id="f-recon">Reconstruction</button>
     <button type="button" data-f="repair" aria-pressed="false" id="f-repair">Repair</button>
-    <button type="button" data-f="maint" aria-pressed="false" id="f-maint">Maintenance</button>
-    <button type="button" data-f="needed" aria-pressed="false" id="f-needed">Needs a contact</button>
+    <button type="button" data-f="known" aria-pressed="false" id="f-known">Has a contact</button>
+    <button type="button" data-f="occupier" aria-pressed="false" id="f-occupier">Owner-occupier</button>
   </div>
 
+  <div class="secthead" id="sec-warm">
+    <h2>Warm &mdash; owners you already work for</h2>
+    <p>Different address, same relationship. The strongest reason to call.</p>
+  </div>
   
-<article class="lot" data-band="recon" data-contact="known" id="w0050">
+<article class="lot" data-band="recon" data-contact="known" data-scan="warm" id="w0050">
   <header class="lot-head">
     <span class="rank">01</span>
     <div class="lot-id">
@@ -230,11 +239,10 @@ body {
       <p class="owner">MERRIMACK COLLEGE</p>
       <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
       <div class='contacts'><p class='org'>Merrimack College &middot; Facilities 978-837-5144 · main 978-837-5000</p><ul class='people'><li><b>Alexander True</b><span class='ct'>Grounds Manager</span><a href='mailto:trueal@merrimack.edu'>trueal@merrimack.edu</a><span class='src'>college directory</span></li><li><b>Lisa Garcia</b><span class='ct'>Manager, Facilities Services</span><a href='mailto:garcial@merrimack.edu'>garcial@merrimack.edu</a><span class='src'>college directory · 978-837-5144</span></li><li><b>Timothy O&#x27;Leary</b><span class='ct'>Deputy COO &amp; Sr AVP, Strategic Operations</span><a href='mailto:olearytr@merrimack.edu'>olearytr@merrimack.edu</a><span class='src'>college directory — budget authority</span></li><li><b>Allison Gill</b><span class='ct'>SVP Student Affairs &amp; Success, COO</span><a href='mailto:gilla@merrimack.edu'>gilla@merrimack.edu</a><span class='src'>college directory</span></li></ul><p class='cnote'>Easiest conversation on the list: in-house facilities department, three adjacent properties, one lot visibly coming apart.</p></div>
-      <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="recon" data-contact="known" id="w0025">
+<article class="lot" data-band="recon" data-contact="known" data-scan="warm" id="w0025">
   <header class="lot-head">
     <span class="rank">02</span>
     <div class="lot-id">
@@ -264,11 +272,10 @@ body {
       <p class="owner">326 BALLARDVALE LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
       <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
-      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0062">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0062">
   <header class="lot-head">
     <span class="rank">03</span>
     <div class="lot-id">
@@ -298,11 +305,10 @@ body {
       <p class="owner">ICBP IV HOLDINGS 40 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
       <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
-      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0068">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0068">
   <header class="lot-head">
     <span class="rank">04</span>
     <div class="lot-id">
@@ -332,11 +338,10 @@ body {
       <p class="owner">ICBP IV HOLDINGS 43 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
       <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
-      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0072">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0072">
   <header class="lot-head">
     <span class="rank">05</span>
     <div class="lot-id">
@@ -366,11 +371,10 @@ body {
       <p class="owner">BPVIF V HOLDINGS 18 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
       <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
-      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0026">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0026">
   <header class="lot-head">
     <span class="rank">06</span>
     <div class="lot-id">
@@ -400,11 +404,10 @@ body {
       <p class="owner">326 BALLARDVALE LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
       <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
-      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0051">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0051">
   <header class="lot-head">
     <span class="rank">07</span>
     <div class="lot-id">
@@ -434,11 +437,10 @@ body {
       <p class="owner">MERRIMACK COLLEGE</p>
       <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
       <div class='contacts'><p class='org'>Merrimack College &middot; Facilities 978-837-5144 · main 978-837-5000</p><ul class='people'><li><b>Alexander True</b><span class='ct'>Grounds Manager</span><a href='mailto:trueal@merrimack.edu'>trueal@merrimack.edu</a><span class='src'>college directory</span></li><li><b>Lisa Garcia</b><span class='ct'>Manager, Facilities Services</span><a href='mailto:garcial@merrimack.edu'>garcial@merrimack.edu</a><span class='src'>college directory · 978-837-5144</span></li><li><b>Timothy O&#x27;Leary</b><span class='ct'>Deputy COO &amp; Sr AVP, Strategic Operations</span><a href='mailto:olearytr@merrimack.edu'>olearytr@merrimack.edu</a><span class='src'>college directory — budget authority</span></li><li><b>Allison Gill</b><span class='ct'>SVP Student Affairs &amp; Success, COO</span><a href='mailto:gilla@merrimack.edu'>gilla@merrimack.edu</a><span class='src'>college directory</span></li></ul><p class='cnote'>Easiest conversation on the list: in-house facilities department, three adjacent properties, one lot visibly coming apart.</p></div>
-      <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0032">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0032">
   <header class="lot-head">
     <span class="rank">08</span>
     <div class="lot-id">
@@ -468,11 +470,10 @@ body {
       <p class="owner">TR KELLY BRANDON D KELLY REBECCA CHU</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
       <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
-      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0017">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0017">
   <header class="lot-head">
     <span class="rank">09</span>
     <div class="lot-id">
@@ -502,11 +503,10 @@ body {
       <p class="owner">ARC TBLVLMA001 LLC</p>
       <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
       <div class='contacts'><p class='org'>Realty Income (via VEREIT Operating Partnership LP)</p><ul class='people'><li><b>Daniel Haug, Bianca Martinez, Karolina Ericsson</b><span class='ct'>authorised on real property (plus VEREIT Operating Partnership LP as Manager)</span><span class='src'>MA Secretary of State filing</span></li></ul><p class='cnote'>IMPORTANT: Realty Income is a net-lease REIT. Under a triple-net lease the TENANT pays for parking lot maintenance, not the landlord. For this lot the buyer is probably the occupier at 175 Kenneth W Welch Dr, not San Diego. Check the tenant before spending a call.</p></div>
-      <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0010">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0010">
   <header class="lot-head">
     <span class="rank">10</span>
     <div class="lot-id">
@@ -536,11 +536,10 @@ body {
       <p class="owner">BVF-V WESTBOROUGH LLC</p>
       <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
       <div class='contacts'><p class='org'>One Beacon St, 24th Floor, Boston — owner of BVF-V Westborough LLC</p><ul class='people'><li><b>Stephen Gullo, Mary Beth Bloom, David Doherty, Ravi Ragnauth, John Lamb, Jason Polcaro, Melinda Brothers, Eric Schrumpf, Brittany Colgan, Joseph Orlandello, Eric Draeger, Jon Frey, Phil Derboghosian</b><span class='ct'>authorised to execute instruments affecting real property</span><span class='src'>MA Secretary of State filing</span></li></ul><p class='cnote'>Thirteen real names at a real Boston address. Signatories, not necessarily the asset manager — but enough to find the right one.</p></div>
-      <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0019">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0019">
   <header class="lot-head">
     <span class="rank">11</span>
     <div class="lot-id">
@@ -570,11 +569,10 @@ body {
       <p class="owner">8 TECH LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
       <div class='contacts'><p class='org'>RJ Kelly Company (RJK) &middot; 781-272-2899 · info@rjk.com</p><ul class='people'><li><b>Carl Kenney</b><span class='ct'>SVP, Property Management</span><a href='mailto:ckenney@rjk.com'>ckenney@rjk.com</a><span class='src'>title from rjk.com; email follows their published pattern, unconfirmed</span></li><li><b>Craig Sorbello</b><span class='ct'>VP, Construction</span><a href='mailto:csorbello@rjk.com'>csorbello@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Doug Malone</b><span class='ct'>VP, Construction Project Management</span><a href='mailto:dmalone@rjk.com'>dmalone@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brooks Goodyear</b><span class='ct'>SVP, Asset Management</span><a href='mailto:bgoodyear@rjk.com'>bgoodyear@rjk.com</a><span class='src'>title from rjk.com; email pattern, unconfirmed</span></li><li><b>Brandon Kelly</b><span class='ct'>CEO &amp; President, Partner</span><span class='src'>(781) 365-2404 — listed publicly; also the trustee on 167 Elm St</span></li><li><b>Jake Milbury</b><span class='ct'>Construction Estimator</span><a href='mailto:jmilbury@rjk.com'>jmilbury@rjk.com</a><span class='src'>email published on rjk.com</span></li></ul><p class='cnote'>Email pattern is first initial + last name @rjk.com, confirmed across a dozen published addresses. Worth asking Scotty whether Jake Milbury is a relation.</p></div>
-      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0078">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0078">
   <header class="lot-head">
     <span class="rank">12</span>
     <div class="lot-id">
@@ -604,11 +602,10 @@ body {
       <p class="owner">BPAZ HOLDINGS 40</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
       <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
-      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="needed" id="w0002">
+<article class="lot" data-band="repair" data-contact="needed" data-scan="warm" id="w0002">
   <header class="lot-head">
     <span class="rank">13</span>
     <div class="lot-id">
@@ -637,12 +634,11 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">QUINCY FOXBORO LLC</p>
       <p class="mail">2310 WASHINGTON STREET, NEWTON LOWER FALLS, MA 02462</p>
-      <div class='contacts'><p class='org'>Quincy Foxboro LLC</p><p class='contact contact-needed'><span class='dot'></span>No person yet</p><p class='cnote'>Not yet looked up. Needs a Massachusetts filing pull, about five minutes in the browser.</p></div>
-      <p class="warm">warm: same owner address as 93 WORCESTER STREET, WELLESLEY (G and M New England)</p>
+      <div class='contacts needs'><p class='org'>Quincy Foxboro LLC</p><p class='contact contact-needed'><span class='dot'></span>No person yet</p><p class='cnote'>Not yet looked up. Needs a Massachusetts filing pull, about five minutes in the browser.</p></div>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0073">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0073">
   <header class="lot-head">
     <span class="rank">14</span>
     <div class="lot-id">
@@ -672,11 +668,10 @@ body {
       <p class="owner">BPVIF V HOLDINGS 43 LLC</p>
       <p class="mail">1111 BROADWAY, OAKLAND, CA 94607</p>
       <div class='contacts'><p class='org'>Berkeley Partners &middot; (415) 295-8080</p><ul class='people'><li><b>Christian Bruno</b><span class='ct'>Director, Asset Management</span><a href='mailto:cbruno@berkeleypartners.com'>cbruno@berkeleypartners.com</a><span class='src'>ZoomInfo 98</span></li><li><b>Brendan Pellerin</b><span class='ct'>Director, Asset Management</span><a href='mailto:bpellerin@berkeleypartners.com'>bpellerin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Andrew Mustin</b><span class='ct'>Director, Asset Management</span><a href='mailto:amustin@berkeleypartners.com'>amustin@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Robert (Rob) Saidi</b><span class='ct'>SVP, Asset Management — 15 years there</span><a href='mailto:rsaidi@berkeleypartners.com'>rsaidi@berkeleypartners.com</a><span class='src'>ZoomInfo 94</span></li><li><b>Jeff Wilkerson</b><span class='ct'>SVP, Property Management</span><span class='src'>named on their site; no email found</span></li></ul><p class='cnote'>The deed names (ICBP IV Holdings, BPVIF V Holdings, BPAZ Holdings) are all Berkeley Partners funds. One conversation covers five properties.</p></div>
-      <p class="warm">warm: same owner address as 32  MANNING RD, BILLERICA (Berkeley Partners)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="repair" data-contact="known" id="w0048">
+<article class="lot" data-band="repair" data-contact="known" data-scan="warm" id="w0048">
   <header class="lot-head">
     <span class="rank">15</span>
     <div class="lot-id">
@@ -706,11 +701,10 @@ body {
       <p class="owner">MERRIMACK COLLEGE</p>
       <p class="mail">315 TURNPIKE STREET, NORTH ANDOVER, MA 01845</p>
       <div class='contacts'><p class='org'>Merrimack College &middot; Facilities 978-837-5144 · main 978-837-5000</p><ul class='people'><li><b>Alexander True</b><span class='ct'>Grounds Manager</span><a href='mailto:trueal@merrimack.edu'>trueal@merrimack.edu</a><span class='src'>college directory</span></li><li><b>Lisa Garcia</b><span class='ct'>Manager, Facilities Services</span><a href='mailto:garcial@merrimack.edu'>garcial@merrimack.edu</a><span class='src'>college directory · 978-837-5144</span></li><li><b>Timothy O&#x27;Leary</b><span class='ct'>Deputy COO &amp; Sr AVP, Strategic Operations</span><a href='mailto:olearytr@merrimack.edu'>olearytr@merrimack.edu</a><span class='src'>college directory — budget authority</span></li><li><b>Allison Gill</b><span class='ct'>SVP Student Affairs &amp; Success, COO</span><a href='mailto:gilla@merrimack.edu'>gilla@merrimack.edu</a><span class='src'>college directory</span></li></ul><p class='cnote'>Easiest conversation on the list: in-house facilities department, three adjacent properties, one lot visibly coming apart.</p></div>
-      <p class="warm">warm: same owner address as 315 TURNPIKE STREET, NORTH ANDOVER (Greener Group LLC)</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="maint" data-contact="needed" id="w0059">
+<article class="lot" data-band="maint" data-contact="needed" data-scan="warm" id="w0059">
   <header class="lot-head">
     <span class="rank">16</span>
     <div class="lot-id">
@@ -739,12 +733,11 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">KOSOW MARVIN P TR</p>
       <p class="mail">181 WELLS AVE #303, NEWTON, MA 02459</p>
-      <div class='contacts'><p class='org'>Kosow Marvin P TR</p><p class='contact contact-needed'><span class='dot'></span>No person yet</p><p class='cnote'>Not yet looked up. A trust, so it will not be in the corporate database — try the Registry of Deeds or the Newton assessor.</p></div>
-      <p class="warm">warm: same owner address as 215 SALEM ST, WOBURN (Kadima)</p>
+      <div class='contacts needs'><p class='org'>Kosow Marvin P TR</p><p class='contact contact-needed'><span class='dot'></span>No person yet</p><p class='cnote'>Not yet looked up. A trust, so it will not be in the corporate database — try the Registry of Deeds or the Newton assessor.</p></div>
     </div>
   </div>
 </article>
-<article class="lot" data-band="maint" data-contact="needed" id="w0057">
+<article class="lot" data-band="maint" data-contact="needed" data-scan="warm" id="w0057">
   <header class="lot-head">
     <span class="rank">17</span>
     <div class="lot-id">
@@ -773,12 +766,11 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">FALL RIVER BAY VILLAGE LTD PRT</p>
       <p class="mail">151 TREMONT ST, BOSTON, MA 02111</p>
-      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
-      <p class="warm">warm: same owner address as 165 CARL AV, BROCKTON (Davis commons)</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="maint" data-contact="needed" id="w0043">
+<article class="lot" data-band="maint" data-contact="needed" data-scan="warm" id="w0043">
   <header class="lot-head">
     <span class="rank">18</span>
     <div class="lot-id">
@@ -807,12 +799,11 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">MALL AT NORTHSHORE LLC</p>
       <p class="mail">PO BOX 6120, INDIANAPOLIS, IN 46206</p>
-      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
-      <p class="warm">warm: same owner address as 100  INDEPENDENCE WAY, DANVERS (Simon Malls ( Liberty Tree Mall))</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="maint" data-contact="needed" id="w0037">
+<article class="lot" data-band="maint" data-contact="needed" data-scan="warm" id="w0037">
   <header class="lot-head">
     <span class="rank">19</span>
     <div class="lot-id">
@@ -841,12 +832,11 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">1010 CHERRY HILL LLC</p>
       <p class="mail">55 CAMBRIDGE ST, BURLINGTON, MA 01803</p>
-      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
-      <p class="warm">warm: same owner address as 100  QUANNAPOWITT PKWY, WAKEFIELD (RJ Kelly - Wakefield)</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
     </div>
   </div>
 </article>
-<article class="lot" data-band="maint" data-contact="needed" id="w0015">
+<article class="lot" data-band="maint" data-contact="needed" data-scan="warm" id="w0015">
   <header class="lot-head">
     <span class="rank">20</span>
     <div class="lot-id">
@@ -875,8 +865,674 @@ body {
       <h3>Owner of record</h3>
       <p class="owner">CVVF DANVERS MA, LLC</p>
       <p class="mail">PO BOX 92129, SOUTHLAKE, TX 76092</p>
-      <p class='contact contact-needed'><span class='dot'></span>No person yet</p>
-      <p class="warm">warm: same owner address as 200 RESEARCH DR, WILMINGTON (JLL- Wilmington)</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+
+  <div class="secthead" id="sec-methuen">
+    <h2>Methuen &mdash; cold territory</h2>
+    <p>Every commercial, industrial and apartment lot in town over about 4,000 square yards of pavement, rated the same
+      way. No relationship behind these, but they are close to home.</p>
+  </div>
+  
+<article class="lot" data-band="recon" data-contact="needed" data-scan="methuen" id="m0111">
+  <header class="lot-head">
+    <span class="rank">01</span>
+    <div class="lot-id">
+      <h2>436 Broadway  Lt 1</h2>
+      <p class="city">Methuen &middot; Shopping Centers/Malls</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0111-lot.jpg" alt="Aerial view of the lot at 436 BROADWAY  LT 1" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0111-close1.jpg" alt="Close-up of pavement at 436 BROADWAY  LT 1" loading="lazy"></figure><figure class="close"><img src="m0111-close2.jpg" alt="Close-up of pavement at 436 BROADWAY  LT 1" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>30,953 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>68<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>20,894 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$459,700–$919,300<span class="mid">mid $605,900</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop B: large irregular blown-out areas where the surface has crumbled to exposed base, mid-right of the parking field</li><li>crop B: dense interconnected cracking around those failures, plus tan patched-and-failed spots in the stall rows</li><li>crop A: bleached near-white surface with a widespread crack network across the east half and dark blotchy patching at the top-left</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">SHRI SWAMINE LLC</p>
+      <p class="mail">PO BOX 2022, DANVERS, MA 01923</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="recon" data-contact="occupier" data-scan="methuen" id="m0387">
+  <header class="lot-head">
+    <span class="rank">02</span>
+    <div class="lot-id">
+      <h2>22 Plymouth St</h2>
+      <p class="city">Methuen &middot; Church, Mosque, Synagogue, Temple, etc...</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0387-lot.jpg" alt="Aerial view of the lot at 22 PLYMOUTH ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0387-close1.jpg" alt="Close-up of pavement at 22 PLYMOUTH ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>4,716 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>80<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>3,772 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$83,000–$166,000<span class="mid">mid $109,400</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: dense block crack network covering essentially the whole bleached white-gray lot</li><li>crop A: broken-up, ragged crumbling strip with debris along the south edge of the lot</li><li>crop A: striping almost gone, surface tone bleached and blotchy throughout</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">ROMAN CATHOLIC ARCH OF BOSTON</p>
+      <p class="mail">22 PLYMOUTH ST, Methuen, MA 01844</p>
+      <div class='contacts occ'><p class='org'>ROMAN CATHOLIC ARCH OF BOSTON</p><p class='contact contact-occupier'><span class='dot'></span>Owner-occupier</p><p class='cnote'>The business at this address owns the lot. No entity tracing needed &mdash; call the main line or walk in.</p></div>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="recon" data-contact="needed" data-scan="methuen" id="m0141">
+  <header class="lot-head">
+    <span class="rank">03</span>
+    <div class="lot-id">
+      <h2>13 Branch St</h2>
+      <p class="city">Methuen &middot; General Office Buildings</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0141-lot.jpg" alt="Aerial view of the lot at 13 BRANCH ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0141-close1.jpg" alt="Close-up of pavement at 13 BRANCH ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>14,953 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>78<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>11,588 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$254,900–$509,900<span class="mid">mid $336,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: dense wide-open block cracking across essentially the entire lot, large interconnected polygons</li><li>crop A: bleached whitish-gray surface, striping almost fully worn away in the lower field</li><li>crop A: cracking runs uninterrupted through the front rows and the rear service apron, patchy darker repairs visible</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">BROOKS PROPERTIES I LLC</p>
+      <p class="mail">13 RED ROOF LANE, SALEM, NH 03079</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="recon" data-contact="needed" data-scan="methuen" id="m0373">
+  <header class="lot-head">
+    <span class="rank">04</span>
+    <div class="lot-id">
+      <h2>1 Aegean Dr Lt 1A</h2>
+      <p class="city">Methuen &middot; Buildings for manufacturing operations</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0373-lot.jpg" alt="Aerial view of the lot at 1 AEGEAN DR LT 1A" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0373-close1.jpg" alt="Close-up of pavement at 1 AEGEAN DR LT 1A" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>6,287 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>89<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>5,595 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$123,100–$246,200<span class="mid">mid $162,300</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: dense block crack network with small 2-4 m blocks covering essentially the entire lot, front to back</li><li>crop A: a wide continuous band of heavy black crack sealant and patch-on-patch across the north stall rows, spreading into large irregular blobs</li><li>crop A: cracking continues through the south bays and along the building apron; striping worn to faint tan lines</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">DIV 1 AEGEAN LLC</p>
+      <p class="mail">125 HIGH ST, BOSTON, MA 02110</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="recon" data-contact="needed" data-scan="methuen" id="m0025">
+  <header class="lot-head">
+    <span class="rank">05</span>
+    <div class="lot-id">
+      <h2>145 Milk St</h2>
+      <p class="city">Methuen &middot; Buildings for manufacturing operations</p>
+    </div>
+    <span class="band band-recon">Reconstruction candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0025-lot.jpg" alt="Aerial view of the lot at 145 MILK ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0025-close1.jpg" alt="Close-up of pavement at 145 MILK ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>14,665 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>70<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>10,266 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$225,800–$451,700<span class="mid">mid $297,700</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: dense block cracking across the whole bleached light-gray storage yard</li><li>crop A: blocks breaking down into smaller fragments along the east side near the material stacks</li><li>crop A: no striping left, wide open cracks and blotchy weathered tone throughout</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">AMERCO REAL ESTATE CO</p>
+      <p class="mail">2727 N CENTRAL AVE, PHEONIX, AZ 85004</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0134">
+  <header class="lot-head">
+    <span class="rank">06</span>
+    <div class="lot-id">
+      <h2>620 Lowell St Lt A</h2>
+      <p class="city">Methuen &middot; Auxiliary Athletic (Educational Private)</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0134-lot.jpg" alt="Aerial view of the lot at 620 LOWELL ST LT A" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0134-close1.jpg" alt="Close-up of pavement at 620 LOWELL ST LT A" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>9,019 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>62<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>5,637 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$124,000–$248,000<span class="mid">mid $163,500</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: dense interconnected block and alligator cracking over the entire angled stall row west of the building</li><li>panel A: apron south and west of the building is broken into large polygons with wide, spalled, dark-filled seams</li><li>panel A: bleached whitish-gray tone with mottled patch-on-patch areas through the lot</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">PHILLIPS ACADEMY TRUSTEES OF</p>
+      <p class="mail">180 MAIN ST, ANDOVER, MA 01810</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0150">
+  <header class="lot-head">
+    <span class="rank">07</span>
+    <div class="lot-id">
+      <h2>100 Griffin Brook Dr Lt 3</h2>
+      <p class="city">Methuen &middot; Research and Development facilities</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0150-lot.jpg" alt="Aerial view of the lot at 100 GRIFFIN BROOK DR LT 3" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0150-close1.jpg" alt="Close-up of pavement at 100 GRIFFIN BROOK DR LT 3" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>7,778 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>38<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,917 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$64,200–$128,300<span class="mid">mid $84,600</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: southwest bay shows a dense open block/alligator network across the whole bay, cells clearly outlined and bleached</li><li>crop A: dark deteriorated spots and vegetation along the cracks in that bay</li><li>crop A: lighter but continuous cracking through the aisle beside the building and the north stalls</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">ADG 100 GRIFFIN BROOK DR LLC</p>
+      <p class="mail">23 KENILWORTH ST, ANDOVER, MA 01810</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0358">
+  <header class="lot-head">
+    <span class="rank">08</span>
+    <div class="lot-id">
+      <h2>60 Pine St</h2>
+      <p class="city">Methuen &middot; Other, Non-Taxable Condominium Common Land</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0358-lot.jpg" alt="Aerial view of the lot at 60 PINE ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0358-close1.jpg" alt="Close-up of pavement at 60 PINE ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>8,567 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>50<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>4,284 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$94,200–$188,500<span class="mid">mid $124,200</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: dense interconnected block/alligator cracking with widened dark cracks east and south of the building</li><li>crop A: surface breaking up along the south drive; pavement edge disintegrating into gravel and dirt</li><li>crop A: bleached gray-white tone with patch-on-patch tonal variation</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">60 PINE STREET REALTY CORP</p>
+      <p class="mail">66 ROBINWOOD AVE, JAMAICA PLAIN, MA 02130</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="occupier" data-scan="methuen" id="m0175">
+  <header class="lot-head">
+    <span class="rank">09</span>
+    <div class="lot-id">
+      <h2>256 Haverhill St</h2>
+      <p class="city">Methuen &middot; Other, Non-Taxable Condominium Common Land</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0175-lot.jpg" alt="Aerial view of the lot at 256 HAVERHILL ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0175-close1.jpg" alt="Close-up of pavement at 256 HAVERHILL ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>11,806 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>55<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>6,493 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$142,800–$285,700<span class="mid">mid $188,300</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: plain interconnected crack network along the whole loop drive, block pattern with many branching linear cracks</li><li>crop A: cracking continues into the side drive and parking bays at lower left</li><li>crop A: weathered light-gray tone throughout, no striping left on the drive</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">EAST VIEW CORP</p>
+      <p class="mail">30 CROSS RD, DRACUT, MA 01826</p>
+      <div class='contacts occ'><p class='org'>EAST VIEW CORP</p><p class='contact contact-occupier'><span class='dot'></span>Owner-occupier</p><p class='cnote'>The business at this address owns the lot. No entity tracing needed &mdash; call the main line or walk in.</p></div>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0042">
+  <header class="lot-head">
+    <span class="rank">10</span>
+    <div class="lot-id">
+      <h2>176 East St Lt B</h2>
+      <p class="city">Methuen &middot; Apartments with More than Eight Units</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0042-lot.jpg" alt="Aerial view of the lot at 176 EAST ST LT B" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0042-close1.jpg" alt="Close-up of pavement at 176 EAST ST LT B" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>5,982 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>65<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>3,888 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$85,500–$171,100<span class="mid">mid $112,800</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: fine interconnected crack network covering essentially the entire drive and stall rows</li><li>crop A: block pattern closely matching the T3 reference example</li><li>crop A: weathered gray, blotchy tone; stall lines faint and broken</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">171 176 EAST STREET OWNER LLC</p>
+      <p class="mail">290 MERRIMACK ST STE 210, LAWRENCE, MA 01843</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="occupier" data-scan="methuen" id="m0155">
+  <header class="lot-head">
+    <span class="rank">11</span>
+    <div class="lot-id">
+      <h2>651 Lowell St Lt 1</h2>
+      <p class="city">Methuen &middot; Research and Development facilities</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0155-lot.jpg" alt="Aerial view of the lot at 651 LOWELL ST LT 1" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0155-close1.jpg" alt="Close-up of pavement at 651 LOWELL ST LT 1" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>17,883 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>60<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>10,730 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$236,100–$472,100<span class="mid">mid $311,200</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: a connected crack network runs across essentially the whole lot, long cracks crossing every aisle</li><li>crop A: cracks continue through the curved southern drive and the islands, matching the T3 reference examples</li><li>crop A: weathered gray tone throughout with faded stall lines and several tone-different patches</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">MKS INSTRUMENTS INC</p>
+      <p class="mail">2 TECH DR SUITE 201, ANDOVER, MA 01810</p>
+      <div class='contacts occ'><p class='org'>MKS INSTRUMENTS INC</p><p class='contact contact-occupier'><span class='dot'></span>Owner-occupier</p><p class='cnote'>The business at this address owns the lot. No entity tracing needed &mdash; call the main line or walk in.</p></div>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0416">
+  <header class="lot-head">
+    <span class="rank">12</span>
+    <div class="lot-id">
+      <h2>180 Haverhill St</h2>
+      <p class="city">Methuen &middot; Shopping Centers/Malls</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0416-lot.jpg" alt="Aerial view of the lot at 180 HAVERHILL ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0416-close1.jpg" alt="Close-up of pavement at 180 HAVERHILL ST" loading="lazy"></figure><figure class="close"><img src="m0416-close2.jpg" alt="Close-up of pavement at 180 HAVERHILL ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>41,917 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>58<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>24,102 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$530,300–$1,060,500<span class="mid">mid $699,000</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop B: block crack network covering essentially the whole stall field, interconnected cracks running both along and across the bays</li><li>crop A: same network visible in the right half and across the main drive aisle, lighter in the left bays</li><li>weathered mid-gray tone; striping still legible, no potholes or patch-on-patch</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">MERRIMAC INCOME PARTNERS</p>
+      <p class="mail">800 BOYLSTON ST STE 1300, BOSTON, MA 02199</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="occupier" data-scan="methuen" id="m0315">
+  <header class="lot-head">
+    <span class="rank">13</span>
+    <div class="lot-id">
+      <h2>200 Lawrence St</h2>
+      <p class="city">Methuen &middot; Church, Mosque, Synagogue, Temple, etc...</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0315-lot.jpg" alt="Aerial view of the lot at 200 LAWRENCE ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0315-close1.jpg" alt="Close-up of pavement at 200 LAWRENCE ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>8,043 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>58<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>4,625 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$101,700–$203,500<span class="mid">mid $134,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: plainly visible crack network across the whole main lot north and east of the building</li><li>crop A: many long linear cracks with branches joining into a loose block pattern</li><li>crop A: weathered gray, blotchy tone; striping faint and worn</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">ROMAN CATHOLIC ARCH OF BOSTON</p>
+      <p class="mail">212 LAWRENCE ST, METHUEN, MA 01844</p>
+      <div class='contacts occ'><p class='org'>ROMAN CATHOLIC ARCH OF BOSTON</p><p class='contact contact-occupier'><span class='dot'></span>Owner-occupier</p><p class='cnote'>The business at this address owns the lot. No entity tracing needed &mdash; call the main line or walk in.</p></div>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0328">
+  <header class="lot-head">
+    <span class="rank">14</span>
+    <div class="lot-id">
+      <h2>Broadway</h2>
+      <p class="city">Methuen &middot; Shopping Centers/Malls</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0328-lot.jpg" alt="Aerial view of the lot at BROADWAY" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0328-close1.jpg" alt="Close-up of pavement at BROADWAY" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>13,921 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>50<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>6,961 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$153,100–$306,300<span class="mid">mid $201,900</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: bleached near-white gray surface across the whole retail field</li><li>crop A: long interconnected cracks running diagonally through the upper parking rows, forming a loose block network</li><li>crop A: additional crack lines through the central drive aisle and around the island curbs</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">NORTH ASSOCIATES LLC</p>
+      <p class="mail">33 BOYLSTON ST STE 3000, CHESTNUT HILL, MA 02467</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0018">
+  <header class="lot-head">
+    <span class="rank">15</span>
+    <div class="lot-id">
+      <h2>Merrimack St</h2>
+      <p class="city">Methuen &middot; Other, Non-Taxable Condominium Common Land</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0018-lot.jpg" alt="Aerial view of the lot at MERRIMACK ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0018-close1.jpg" alt="Close-up of pavement at MERRIMACK ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>7,761 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>48<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>3,687 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$81,100–$162,200<span class="mid">mid $106,900</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: interconnected branching crack network on the drive near the cul-de-sac at upper right</li><li>crop A: second network of fine interconnected cracks around the lower island and driveway aprons</li><li>crop A: light-gray weathered tone, no striping left on the drive</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">HOMESTEAD VILLAGE LLC</p>
+      <p class="mail">380 MERRIMACK ST STE 1-B, METHUEN, MA 01844</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0203">
+  <header class="lot-head">
+    <span class="rank">16</span>
+    <div class="lot-id">
+      <h2>70 Pleasant Valley St</h2>
+      <p class="city">Methuen &middot; Shopping Centers/Malls</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0203-lot.jpg" alt="Aerial view of the lot at 70 PLEASANT VALLEY ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0203-close1.jpg" alt="Close-up of pavement at 70 PLEASANT VALLEY ST" loading="lazy"></figure><figure class="close"><img src="m0203-close2.jpg" alt="Close-up of pavement at 70 PLEASANT VALLEY ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>31,271 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>50<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>15,635 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$344,000–$688,000<span class="mid">mid $453,400</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop B: extensive interconnected crack network across the west parking field, plainly visible block pattern</li><li>crop B: weathered light-gray tone with darker patched areas along the building front</li><li>crop A: long linear cracks with branching through the east stall rows and along the south drive</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">RD METHUEN ASSOCIATES LTD</p>
+      <p class="mail">PO BOX 460169, HOUSTON, TX 77056</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="occupier" data-scan="methuen" id="m0241">
+  <header class="lot-head">
+    <span class="rank">17</span>
+    <div class="lot-id">
+      <h2>200 North Lowell St</h2>
+      <p class="city">Methuen &middot; Mixed Use (Primarily Commercial, some Recreation)</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0241-lot.jpg" alt="Aerial view of the lot at 200 NORTH LOWELL ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0241-close1.jpg" alt="Close-up of pavement at 200 NORTH LOWELL ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>16,116 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>55<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>8,864 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$195,000–$390,000<span class="mid">mid $257,000</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>panel A: plainly visible interconnected block-crack network across the upper half of the clubhouse lot</li><li>panel A: cracks run continuously through the empty stall bays and curve across the east drive aisle</li><li>panel A: striping worn to faint ghost lines, stalls barely readable</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">HICKORY HILL GOLF COURSE INC</p>
+      <p class="mail">200 N LOWELL ST, METHUEN, MA 01844</p>
+      <div class='contacts occ'><p class='org'>HICKORY HILL GOLF COURSE INC</p><p class='contact contact-occupier'><span class='dot'></span>Owner-occupier</p><p class='cnote'>The business at this address owns the lot. No entity tracing needed &mdash; call the main line or walk in.</p></div>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="occupier" data-scan="methuen" id="m0043">
+  <header class="lot-head">
+    <span class="rank">18</span>
+    <div class="lot-id">
+      <h2>224 East St</h2>
+      <p class="city">Methuen &middot; Small Retail and Services stores (under 10,000 sq. ft.)</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0043-lot.jpg" alt="Aerial view of the lot at 224 EAST ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0043-close1.jpg" alt="Close-up of pavement at 224 EAST ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>5,622 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>40<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,249 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$49,500–$99,000<span class="mid">mid $65,200</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: weathered light-gray boat yard with long interconnected cracks through the central drive between the buildings</li><li>crop A: ragged broken section with dark material and rough edges in the middle of the yard</li><li>crop A: dark patches and stained tonal blotches around the north storage area</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">224 224 EAST ST REAL ESTATE</p>
+      <p class="mail">38 BAREMEADOW ST, METHUEN, MA 01844</p>
+      <div class='contacts occ'><p class='org'>224 224 EAST ST REAL ESTATE</p><p class='contact contact-occupier'><span class='dot'></span>Owner-occupier</p><p class='cnote'>The business at this address owns the lot. No entity tracing needed &mdash; call the main line or walk in.</p></div>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0398">
+  <header class="lot-head">
+    <span class="rank">19</span>
+    <div class="lot-id">
+      <h2>375 Merrimack St</h2>
+      <p class="city">Methuen &middot; Other, Non-Taxable Condominium Common Land</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0398-lot.jpg" alt="Aerial view of the lot at 375 MERRIMACK ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0398-close1.jpg" alt="Close-up of pavement at 375 MERRIMACK ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>5,018 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>52<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,634 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$58,000–$115,900<span class="mid">mid $76,400</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: bleached near-white pavement across the central drive and stall row with a plainly visible interconnected block-crack network</li><li>crop A: the network continues into the loop road toward the upper right, covering well over a fifth of the paved area</li><li>crop A: striping almost entirely worn off, surface tone weathered and blotchy</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">GLADSTONE KARL TR</p>
+      <p class="mail">375-395 MERRIMACK ST, METHUEN, MA 01844</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
+    </div>
+  </div>
+</article>
+<article class="lot" data-band="repair" data-contact="needed" data-scan="methuen" id="m0085">
+  <header class="lot-head">
+    <span class="rank">20</span>
+    <div class="lot-id">
+      <h2>1 Branch St</h2>
+      <p class="city">Methuen &middot; General Office Buildings</p>
+    </div>
+    <span class="band band-repair">Repair candidate</span>
+  </header>
+
+  <figure class="hero"><img src="m0085-lot.jpg" alt="Aerial view of the lot at 1 BRANCH ST" loading="lazy"></figure>
+  <div class="closes"><figure class="close"><img src="m0085-close1.jpg" alt="Close-up of pavement at 1 BRANCH ST" loading="lazy"></figure></div>
+
+  <dl class="facts">
+    <div><dt>Pavement on site</dt><dd>4,210 <span class="u">sq yd</span></dd></div>
+    <div><dt>Showing distress</dt><dd>55<span class="u">%</span></dd></div>
+    <div><dt>Section to price</dt><dd>2,316 <span class="u">sq yd</span></dd></div>
+    <div class="price"><dt>Likely ticket</dt><dd>$50,900–$101,900<span class="mid">mid $67,100</span></dd></div>
+  </dl>
+
+  <div class="detail">
+    <div class="block">
+      <h3>What the photo shows</h3>
+      <ul class="ev"><li>crop A: fine interconnected crack network spread across most of the light-gray angled-stall lot</li><li>crop A: cracks branch and join between stall rows rather than running as isolated lines</li><li>crop A: bleached gray tone, though white stall striping is still bright</li></ul>
+    </div>
+    <div class="block">
+      <h3>Owner of record</h3>
+      <p class="owner">BROOKS PROPERTIES I LLC</p>
+      <p class="mail">13 RED ROOF LANE, SALEM, NH 03079</p>
+      <p class='contact contact-needed'><span class='dot'></span>No person yet &mdash; holding entity, needs a state filing pull</p>
     </div>
   </div>
 </article>
@@ -887,10 +1543,11 @@ body {
       where a whole-lot job was done in 2026, this measure came within about 10% of the invoiced square yards.</p>
     <p><strong>Section to price</strong> is the share of the lot showing distress, because owners buy one section at a
       time. <strong>Likely ticket</strong> applies your own 2026 unit pricing to that section: $22 and $44 per square
-      yard are the middle half of your jobs, $29 the median. It is a range to open a conversation, not a quote.</p>
-    <p><strong>Condition</strong> is judged twice from the photo by independent reviewers working from a written rubric
-      and a reference sheet of real examples. Reviewers agreed on the exact band 61% of the time and were never more
-      than one band apart. The ordering is more reliable than the label.</p>
+      yard are the middle half of your jobs, $29 the median. A range to open a conversation, not a quote.</p>
+    <p><strong>Condition</strong> is judged from the photo by independent reviewers working from a written rubric and a
+      reference sheet of real examples. Every warm lot and the top 60 Methuen lots were rated twice. Reviewers agreed on
+      the exact band about two thirds of the time and were almost never more than one band apart. The ordering is more
+      reliable than the label.</p>
     <p>Photography is spring 2025, leaves off. Anything repaved since will look worse here than it is on the ground.</p>
   </div>
 </div>
@@ -899,16 +1556,20 @@ body {
 (function () {
   var btns = Array.prototype.slice.call(document.querySelectorAll('.bar button'));
   var lots = Array.prototype.slice.call(document.querySelectorAll('.lot'));
+  var heads = { warm: document.getElementById('sec-warm'), methuen: document.getElementById('sec-methuen') };
   function apply(f) {
     btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.f === f)); });
     lots.forEach(function (l) {
-      l.hidden = !(f === 'all' || l.dataset.band === f || l.dataset.contact === f);
+      l.hidden = !(f === 'all' || l.dataset.band === f || l.dataset.contact === f || l.dataset.scan === f);
+    });
+    Object.keys(heads).forEach(function (k) {
+      heads[k].hidden = !lots.some(function (l) { return l.dataset.scan === k && !l.hidden; });
     });
     try { localStorage.setItem('lotbook-filter', f); } catch (e) {}
   }
   btns.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.f); }); });
   var saved = null;
   try { saved = localStorage.getItem('lotbook-filter'); } catch (e) {}
-  if (saved && btns.some(function (b) { return b.dataset.f === saved; })) apply(saved);
+  apply(saved && btns.some(function (b) { return b.dataset.f === saved; }) ? saved : 'all');
 })();
 </script>
